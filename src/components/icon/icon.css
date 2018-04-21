@@ -1,0 +1,22 @@
+.icon {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    cursor: pointer;
+}
+
+.icon_type-star {
+    background-image: url('./resources/icon-star.svg');
+}
+
+.icon_type-star-fill {
+    background-image: url('./resources/icon-star-fill.svg');
+}
+
+.icon_disabled {
+    opacity: .5;
+    pointer-events: none;
+}

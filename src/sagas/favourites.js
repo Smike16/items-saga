@@ -1,0 +1,59 @@
+import { take, call, put, fork } from 'redux-saga/effects';
+import {
+    FETCH_ITEMS_SUCCESS,
+
+    FETCH_FAVOURITES_REQUEST,
+    FETCH_FAVOURITES_SUCCESS,
+    FETCH_FAVOURITES_FAILURE,
+
+    UPDATE_FAVOURITE_REQUEST,
+    UPDATE_FAVOURITE_SUCCESS,
+    UPDATE_FAVOURITE_FAILURE
+} from '../constants/action-types';
+import * as Api from '../api';
+
+/**
+ * Fetch favourites saga
+ */
+function* fetchFavourites(ids) {
+    try {
+        const response = yield call(Api.fetchFavourites, ids);
+        yield put({ type: FETCH_FAVOURITES_SUCCESS, response });
+    } catch (error) {
+        yield put({ type: FETCH_FAVOURITES_FAILURE, error })
+    }
+}
+
+function* updateFavourite(itemId) {
+    try {
+        yield call(Api.updateFavourite, itemId);
+        yield put({ type: UPDATE_FAVOURITE_SUCCESS, itemId });
+    } catch (error) {
+        yield put({ type: UPDATE_FAVOURITE_FAILURE });
+    }
+}
+
+/**
+ * Watch favourites
+ */
+function* watchFetchFavourites() {
+    while (true) {
+        const { response } = yield take(FETCH_ITEMS_SUCCESS);
+
+        yield put({ type: FETCH_FAVOURITES_REQUEST });
+        yield call(fetchFavourites, response.items.map(item => item.id));
+    }
+}
+
+function* watchUpdateFavourites() {
+    while (true) {
+        const { itemId } = yield take(UPDATE_FAVOURITE_REQUEST);
+
+        yield call(updateFavourite, itemId);
+    }
+}
+
+export default [
+    fork(watchFetchFavourites),
+    fork(watchUpdateFavourites)
+];

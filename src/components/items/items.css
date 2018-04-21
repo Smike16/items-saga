@@ -1,0 +1,9 @@
+.root {
+    width: 940px;
+    margin: 0 auto;
+}
+
+.items {
+    padding-left: 10px;
+    padding-right: 10px;
+}

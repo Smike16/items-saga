@@ -1,4 +1,4 @@
-import { take, call, put, fork } from 'redux-saga/effects';
+import { take, call, put, fork, takeLatest } from 'redux-saga/effects';
 import {
     FETCH_ITEMS_SUCCESS,
 
@@ -14,6 +14,8 @@ import * as Api from '../api';
 
 /**
  * Fetch favourites saga
+ *
+ * @param {Array} ids — array of items ids
  */
 function* fetchFavourites(ids) {
     try {
@@ -24,7 +26,13 @@ function* fetchFavourites(ids) {
     }
 }
 
-function* updateFavourite(itemId) {
+/**
+ * Update item favourite flag
+ *
+ * @param {Object} action
+ * @param {number} action.itemId
+ */
+function* updateFavourite({ itemId }) {
     try {
         yield call(Api.updateFavourite, itemId);
         yield put({ type: UPDATE_FAVOURITE_SUCCESS, itemId });
@@ -34,7 +42,7 @@ function* updateFavourite(itemId) {
 }
 
 /**
- * Watch favourites
+ * Watchers
  */
 function* watchFetchFavourites() {
     while (true) {
@@ -46,11 +54,7 @@ function* watchFetchFavourites() {
 }
 
 function* watchUpdateFavourites() {
-    while (true) {
-        const { itemId } = yield take(UPDATE_FAVOURITE_REQUEST);
-
-        yield call(updateFavourite, itemId);
-    }
+    yield takeLatest(UPDATE_FAVOURITE_REQUEST, updateFavourite);
 }
 
 export default [

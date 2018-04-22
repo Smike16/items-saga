@@ -2,9 +2,7 @@ export function fetchItems() {
     return new Promise(resolve => {
         setTimeout(() => {
             resolve({
-                items: Array.from({ length: 6 }, () => {
-                    return createItem();
-                }),
+                items: Array.from({ length: 6 }, createItem),
                 total: 18
             });
         }, 1000);
@@ -80,7 +78,7 @@ const titles = [
 function createItem() {
     return {
         id: getRandom(1000000000000, 9999999999999),
-        image: 'https://picsum.photos/300/200/?random',
+        image: `https://picsum.photos/300/200?image=${getRandom(0, 200)}`,
         title: titles[getRandom(0, titles.length - 1)],
         price: getRandom(100, 5000),
         metro: metroList[getRandom(0, metroList.length - 1)],
